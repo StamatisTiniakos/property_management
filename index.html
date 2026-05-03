@@ -1,13 +1,1225 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + React + TS</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aegean Stays — Rentals in Athens & Andros</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --white:       #F5F0E8;
+      --sand:        #E8E0CE;
+      --sand-dark:   #C8BFA8;
+      --driftwood:   #A89880;
+      --terracotta:  #B85C38;
+      --terra-light: #D4744A;
+      --cypress:     #3D5A3E;
+      --olive:       #6B7A52;
+      --sage:        #8E9E7E;
+      --lavender:    #7B6E9E;
+      --sky:         #3A7BAD;
+      --sky-deep:    #1E4E72;
+      --stone:       #8A7E6E;
+      --ink:         #221E18;
+      --ink-mid:     #4A4438;
+      --ink-soft:    #7A7268;
+      --radius-sm:   8px;
+      --radius-md:   16px;
+      --radius-lg:   28px;
+      --shadow-sm:   0 2px 12px rgba(34,30,24,.08);
+      --shadow-md:   0 8px 32px rgba(34,30,24,.13);
+      --shadow-lg:   0 20px 60px rgba(34,30,24,.18);
+      --transition:  .35s cubic-bezier(.4,0,.2,1);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    /* Remove tap highlight on iOS */
+    a, button, [onclick] { -webkit-tap-highlight-color: transparent; cursor: pointer; }
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--white);
+      color: var(--ink);
+      line-height: 1.65;
+      overflow-x: hidden;
+    }
+    img { display: block; width: 100%; }
+    a { color: inherit; text-decoration: none; }
+    ul { list-style: none; }
+
+    h1, h2, h3, h4 { font-family: 'Cormorant Garamond', serif; font-weight: 400; line-height: 1.15; }
+    h1 { font-size: clamp(2.6rem, 6vw, 5rem); }
+    h2 { font-size: clamp(1.9rem, 4vw, 3rem); }
+    h3 { font-size: clamp(1.3rem, 2.5vw, 1.9rem); }
+
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+    .tag {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: .72rem; font-weight: 500; letter-spacing: .08em;
+      text-transform: uppercase; padding: 4px 12px;
+      border-radius: 99px;
+    }
+    .tag--aegean { background: rgba(58,123,173,.12); color: var(--sky-deep); }
+    .tag--olive  { background: rgba(61,90,62,.1);   color: var(--cypress); }
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 13px 28px; border-radius: 99px;
+      font-family: 'DM Sans', sans-serif; font-size: .88rem;
+      font-weight: 500; letter-spacing: .03em;
+      cursor: pointer; transition: var(--transition);
+      border: none;
+    }
+    .btn--primary {
+      background: var(--terracotta); color: #fff;
+      box-shadow: 0 4px 20px rgba(184,92,56,.32);
+    }
+    .btn--primary:hover { background: #9a4828; transform: translateY(-2px); box-shadow: 0 8px 28px rgba(184,92,56,.42); }
+    .btn--outline {
+      background: transparent; color: var(--sky);
+      border: 1.5px solid var(--sky);
+    }
+    .btn--outline:hover { background: var(--sky); color: #fff; transform: translateY(-2px); }
+    .btn--ghost {
+      background: rgba(255,255,255,.18); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+      color: #fff; border: 1.5px solid rgba(255,255,255,.4);
+    }
+    .btn--ghost:hover { background: rgba(255,255,255,.32); transform: translateY(-2px); }
+
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 0 24px;
+      transition: background var(--transition), box-shadow var(--transition);
+    }
+    nav.scrolled {
+      background: rgba(245,240,232,.96); -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
+      box-shadow: 0 2px 20px rgba(34,30,24,.08);
+    }
+    .nav-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 72px;
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+      cursor: pointer;
+    }
+    .nav-logo-mark {
+      width: 36px; height: 36px;
+      background: var(--cypress); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .nav-logo-mark svg { width: 20px; height: 20px; fill: #fff; }
+    .nav-logo-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.35rem; font-weight: 600;
+      color: var(--ink);
+    }
+    .nav-logo-text span { color: var(--terracotta); }
+    .nav-links { display: flex; align-items: center; gap: 32px; }
+    .nav-links a {
+      font-size: .88rem; font-weight: 500; color: var(--ink-mid);
+      transition: color var(--transition); position: relative;
+      cursor: pointer;
+    }
+    .nav-links a::after {
+      content: ''; position: absolute; bottom: -3px; left: 0; right: 100%;
+      height: 1.5px; background: var(--terracotta);
+      transition: right var(--transition);
+    }
+    .nav-links a:hover { color: var(--ink); }
+    .nav-links a:hover::after { right: 0; }
+    .nav-cta { margin-left: 8px; cursor: pointer; }
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; }
+    .hamburger span { display: block; width: 24px; height: 2px; background: var(--ink); border-radius: 2px; transition: var(--transition); }
+    .mobile-menu {
+      display: none; position: fixed; inset: 0; z-index: 99;
+      background: var(--white); padding: 100px 32px 40px;
+      flex-direction: column; gap: 24px; align-items: center;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a { font-family: 'Cormorant Garamond', serif; font-size: 2rem; color: var(--ink); cursor: pointer; }
+
+    .hero {
+      position: relative; min-height: 100vh; min-height: 100svh;
+      display: flex; align-items: center;
+      overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute; inset: 0;
+      background: linear-gradient(150deg,
+        #2C1A0E 0%, #6B3820 25%, #B85C38 55%, #A89880 80%, #C8BFA8 100%);
+    }
+    .hero-bg::before {
+      content: ''; position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 55% 60% at 85% 30%, rgba(58,123,173,.28) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 50% at 5% 90%, rgba(61,90,62,.35) 0%, transparent 55%),
+        radial-gradient(ellipse 60% 40% at 50% 100%, rgba(34,30,24,.4) 0%, transparent 60%);
+    }
+    .hero-decor {
+      position: absolute; right: -80px; top: 10%;
+      width: 520px; height: 520px;
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 50%;
+    }
+    .hero-decor::before {
+      content: ''; position: absolute; inset: 40px;
+      border: 1px solid rgba(255,255,255,.08); border-radius: 50%;
+    }
+    .hero-decor::after {
+      content: ''; position: absolute; inset: 80px;
+      border: 1px solid rgba(255,255,255,.06); border-radius: 50%;
+    }
+    .hero-waves {
+      position: absolute; bottom: 0; left: 0; right: 0;
+    }
+    .hero-waves svg { width: 100%; height: auto; }
+    .hero-content {
+      position: relative; z-index: 2;
+      max-width: 1200px; margin: 0 auto; padding: 120px 24px 100px;
+    }
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 10px;
+      color: rgba(255,255,255,.75); font-size: .78rem;
+      font-weight: 500; letter-spacing: .15em; text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+    .hero-eyebrow::before {
+      content: ''; display: block; width: 30px; height: 1px; background: rgba(255,255,255,.5);
+    }
+    .hero h1 {
+      color: #fff; max-width: 680px;
+      margin-bottom: 24px;
+      text-shadow: 0 2px 24px rgba(34,30,24,.3);
+    }
+    .hero h1 em { font-style: italic; color: #F0C898; }
+    .hero-sub {
+      color: rgba(255,255,255,.78); font-size: 1.05rem;
+      max-width: 480px; margin-bottom: 40px; line-height: 1.7;
+    }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 14px; }
+    .hero-scroll {
+      position: absolute; bottom: 100px; right: 60px; z-index: 2;
+      display: flex; flex-direction: column; align-items: center; gap: 10px;
+      color: rgba(255,255,255,.55); font-size: .72rem;
+      letter-spacing: .12em; text-transform: uppercase;
+    }
+    .hero-scroll-line {
+      width: 1px; height: 60px; background: rgba(255,255,255,.3);
+      animation: scrollPulse 2s ease-in-out infinite;
+    }
+    @keyframes scrollPulse {
+      0%, 100% { opacity: .3; transform: scaleY(1); }
+      50% { opacity: .8; transform: scaleY(1.1); }
+    }
+
+    .stats-bar {
+      background: var(--sand); border-bottom: 1px solid var(--sand-dark);
+    }
+    .stats-inner {
+      max-width: 1200px; margin: 0 auto; padding: 0 24px;
+      display: flex; justify-content: center; gap: 0;
+    }
+    .stat {
+      display: flex; flex-direction: column; align-items: center;
+      padding: 28px 48px; gap: 4px; position: relative;
+    }
+    .stat + .stat::before {
+      content: ''; position: absolute; left: 0; top: 28px; bottom: 28px;
+      width: 1px; background: var(--sand-dark);
+    }
+    .stat-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.4rem; color: var(--terracotta); line-height: 1;
+    }
+    .stat-label { font-size: .78rem; color: var(--ink-soft); font-weight: 500; letter-spacing: .04em; }
+
+    .about { padding: 100px 0; }
+    .about-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 80px; align-items: center;
+    }
+    .about-image-wrap { position: relative; }
+    .about-image-main {
+      border-radius: var(--radius-lg); overflow: hidden;
+      aspect-ratio: 4/5; background: var(--sand);
+      box-shadow: var(--shadow-lg);
+    }
+    .about-image-main img { height: 100%; object-fit: cover; }
+    .about-image-accent {
+      position: absolute; bottom: -30px; right: -30px;
+      width: 55%; border-radius: var(--radius-md); overflow: hidden;
+      aspect-ratio: 1/1; border: 5px solid var(--white);
+      box-shadow: var(--shadow-md); background: var(--sand);
+    }
+    .about-image-accent img { height: 100%; object-fit: cover; }
+    .about-badge {
+      position: absolute; top: 30px; left: -20px;
+      background: var(--terracotta); color: #fff;
+      border-radius: var(--radius-md); padding: 16px 20px;
+      box-shadow: var(--shadow-md);
+      font-family: 'Cormorant Garamond', serif;
+    }
+    .about-badge-num { font-size: 2rem; display: block; line-height: 1; }
+    .about-badge-text { font-size: .82rem; opacity: .85; }
+    .about-tag { margin-bottom: 16px; }
+    .about h2 { margin-bottom: 20px; }
+    .about-lead { font-size: 1.05rem; color: var(--ink-mid); margin-bottom: 24px; line-height: 1.75; }
+    .about-body { color: var(--ink-soft); margin-bottom: 36px; }
+    .about-features { display: flex; flex-direction: column; gap: 14px; margin-bottom: 36px; }
+    .about-feature { display: flex; align-items: flex-start; gap: 14px; }
+    .about-feature-icon {
+      width: 36px; height: 36px; flex-shrink: 0;
+      background: rgba(44,95,138,.1); border-radius: 8px;
+      display: flex; align-items: center; justify-content: center; font-size: 1rem;
+    }
+    .about-feature-text strong { display: block; font-size: .9rem; margin-bottom: 2px; }
+    .about-feature-text span { font-size: .82rem; color: var(--ink-soft); }
+
+    .properties { padding: 100px 0; background: var(--sand); }
+    .section-header { text-align: center; margin-bottom: 64px; }
+    .section-tag { margin-bottom: 14px; }
+    .section-header h2 { margin-bottom: 14px; }
+    .section-header p { color: var(--ink-soft); max-width: 520px; margin: 0 auto; }
+    .filter-tabs {
+      display: flex; justify-content: center; gap: 10px;
+      margin-bottom: 48px; flex-wrap: wrap;
+    }
+    .filter-tab {
+      padding: 8px 22px; border-radius: 99px; border: 1.5px solid var(--sand-dark);
+      background: transparent; cursor: pointer;
+      font-family: 'DM Sans', sans-serif; font-size: .85rem; font-weight: 500;
+      color: var(--ink-mid); transition: var(--transition);
+    }
+    .filter-tab.active, .filter-tab:hover {
+      background: var(--sky); border-color: var(--sky); color: #fff;
+    }
+    .properties-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 32px;
+    }
+
+    .property-card {
+      background: var(--white); border-radius: var(--radius-lg);
+      overflow: hidden; box-shadow: var(--shadow-sm);
+      transition: transform var(--transition), box-shadow var(--transition);
+    }
+    .property-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
+    .card-gallery { position: relative; aspect-ratio: 4/3; overflow: hidden; }
+    .card-gallery-track {
+      display: flex; height: 100%;
+      transition: transform .5s cubic-bezier(.4,0,.2,1);
+    }
+    .card-gallery-track img {
+      min-width: 100%; height: 100%; object-fit: cover; flex-shrink: 0;
+    }
+    .card-gallery-prev, .card-gallery-next {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      width: 34px; height: 34px; border-radius: 50%;
+      background: rgba(255,255,255,.82); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+      border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: var(--transition); opacity: 0;
+      box-shadow: 0 2px 10px rgba(0,0,0,.15);
+    }
+    .card-gallery:hover .card-gallery-prev,
+    .card-gallery:hover .card-gallery-next { opacity: 1; }
+    .card-gallery-prev { left: 12px; }
+    .card-gallery-next { right: 12px; }
+    .card-gallery-prev:hover, .card-gallery-next:hover { background: #fff; }
+    .card-gallery-prev svg, .card-gallery-next svg { width: 14px; height: 14px; stroke: var(--ink); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .card-dots {
+      position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%);
+      display: flex; gap: 5px;
+    }
+    .card-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: rgba(255,255,255,.5); transition: var(--transition);
+    }
+    .card-dot.active { background: #fff; width: 18px; border-radius: 3px; }
+    .card-badge {
+      position: absolute; top: 14px; left: 14px;
+      display: flex; gap: 6px; flex-wrap: wrap;
+    }
+    .card-body { padding: 26px 28px 28px; }
+    .card-location {
+      display: flex; align-items: center; gap: 6px;
+      font-size: .78rem; color: var(--ink-soft); font-weight: 500;
+      letter-spacing: .04em; margin-bottom: 8px;
+    }
+    .card-location svg { width: 12px; height: 12px; stroke: var(--terracotta); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .card-title { font-size: 1.4rem; margin-bottom: 10px; }
+    .card-desc { font-size: .88rem; color: var(--ink-soft); margin-bottom: 20px; line-height: 1.65; }
+    .card-features {
+      display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 22px;
+    }
+    .card-feature {
+      display: flex; align-items: center; gap: 5px;
+      font-size: .78rem; color: var(--ink-mid); font-weight: 500;
+      background: var(--sand); padding: 4px 10px; border-radius: 6px;
+    }
+    .card-feature span { font-size: .9rem; }
+    .card-footer {
+      display: flex; align-items: center; justify-content: space-between;
+      padding-top: 18px; border-top: 1px solid var(--sand);
+    }
+    .card-price { font-family: 'Cormorant Garamond', serif; }
+    .card-price-amount { font-size: 1.55rem; color: var(--ink); line-height: 1; }
+    .card-price-period { font-size: .78rem; color: var(--ink-soft); font-style: italic; }
+
+    .destinations { padding: 100px 0; }
+    .destinations-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 60px; }
+    .dest-card {
+      position: relative; border-radius: var(--radius-lg);
+      overflow: hidden; aspect-ratio: 4/3;
+      display: flex; align-items: flex-end;
+      background: var(--sand);
+    }
+    .dest-card-bg {
+      position: absolute; inset: 0;
+      transition: transform .6s cubic-bezier(.4,0,.2,1);
+    }
+    .dest-card:hover .dest-card-bg { transform: scale(1.05); }
+    .dest-card-content {
+      position: relative; z-index: 2;
+      background: linear-gradient(to top, rgba(0,0,0,.78) 0%, rgba(0,0,0,.2) 60%, transparent 100%);
+      width: 100%; padding: 32px;
+    }
+    .dest-tag { margin-bottom: 10px; background: rgba(255,255,255,.18); color: #fff; -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); }
+    .dest-card h3 { color: #fff; margin-bottom: 8px; }
+    .dest-card p { color: rgba(255,255,255,.75); font-size: .88rem; margin-bottom: 16px; }
+    .dest-icon {
+      position: absolute; top: 28px; right: 28px; z-index: 2;
+      font-size: 3rem; opacity: .25;
+    }
+
+    .testimonials { padding: 100px 0; background: var(--ink); }
+    .testimonials .section-header h2 { color: #fff; }
+    .testimonials .section-header p { color: rgba(255,255,255,.55); }
+    .testimonials .section-tag { background: rgba(255,255,255,.1); color: rgba(255,255,255,.75); }
+    .testi-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; }
+    .testi-card {
+      background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.08);
+      border-radius: var(--radius-md); padding: 32px;
+      transition: var(--transition);
+    }
+    .testi-card:hover { background: rgba(255,255,255,.09); }
+    .testi-stars { color: #f0c040; font-size: 1rem; margin-bottom: 16px; letter-spacing: 2px; }
+    .testi-text { color: rgba(255,255,255,.8); font-size: .95rem; line-height: 1.75; margin-bottom: 24px; font-style: italic; }
+    .testi-author { display: flex; align-items: center; gap: 12px; }
+    .testi-avatar {
+      width: 42px; height: 42px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; font-weight: 600; color: #fff; flex-shrink: 0;
+    }
+    .testi-name { font-weight: 500; color: #fff; font-size: .9rem; }
+    .testi-origin { font-size: .78rem; color: rgba(255,255,255,.4); }
+
+    .contact { padding: 100px 0; }
+    .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
+    .contact h2 { margin-bottom: 16px; }
+    .contact-lead { color: var(--ink-soft); margin-bottom: 36px; line-height: 1.75; }
+    .contact-items { display: flex; flex-direction: column; gap: 20px; }
+    .contact-item { display: flex; align-items: flex-start; gap: 16px; }
+    .contact-icon {
+      width: 44px; height: 44px; flex-shrink: 0;
+      border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem;
+    }
+    .contact-icon--terra { background: rgba(184,92,56,.1); }
+    .contact-icon--aegean { background: rgba(58,123,173,.1); }
+    .contact-icon--olive { background: rgba(61,90,62,.1); }
+    .contact-info strong { display: block; font-size: .9rem; margin-bottom: 2px; }
+    .contact-info span, .contact-info a { font-size: .88rem; color: var(--ink-soft); }
+    .contact-info a:hover { color: var(--sky); }
+    .contact-form {
+      background: var(--sand); border-radius: var(--radius-lg);
+      padding: 40px; box-shadow: var(--shadow-sm);
+    }
+    .contact-form h3 { margin-bottom: 6px; }
+    .contact-form p { font-size: .88rem; color: var(--ink-soft); margin-bottom: 28px; }
+    .form-group { margin-bottom: 18px; }
+    .form-group label { display: block; font-size: .82rem; font-weight: 500; margin-bottom: 7px; color: var(--ink-mid); }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%; padding: 12px 16px;
+      border: 1.5px solid var(--sand-dark); border-radius: var(--radius-sm);
+      background: var(--white); font-family: 'DM Sans', sans-serif;
+      font-size: .9rem; color: var(--ink);
+      transition: border-color var(--transition);
+      outline: none;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      border-color: var(--sky);
+    }
+    .form-group textarea { resize: vertical; min-height: 100px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+    footer { background: #1A1510; color: rgba(245,240,232,.6); }
+    .footer-main {
+      padding: 72px 0 48px;
+      display: grid; grid-template-columns: 1.8fr 1fr 1fr 1fr;
+      gap: 48px;
+    }
+    .footer-logo {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 18px;
+    }
+    .footer-logo-mark {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: var(--cypress); display: flex; align-items: center; justify-content: center;
+    }
+    .footer-logo-mark svg { width: 18px; height: 18px; fill: #fff; }
+    .footer-logo-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.2rem; color: var(--white);
+    }
+    .footer-logo-text span { color: var(--terra-light); }
+    .footer-tagline { font-size: .88rem; line-height: 1.7; max-width: 260px; margin-bottom: 24px; }
+    .footer-social { display: flex; gap: 10px; }
+    .social-btn {
+      width: 36px; height: 36px; border-radius: 8px;
+      background: rgba(245,240,232,.07); display: flex; align-items: center; justify-content: center;
+      font-size: .9rem; transition: var(--transition); color: rgba(245,240,232,.6);
+    }
+    .social-btn:hover { background: var(--terracotta); color: #fff; }
+    .footer-col h4 { font-family: 'DM Sans', sans-serif; font-size: .78rem; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: rgba(245,240,232,.3); margin-bottom: 18px; }
+    .footer-col ul { display: flex; flex-direction: column; gap: 10px; }
+    .footer-col ul a { font-size: .88rem; transition: color var(--transition); cursor: pointer; }
+    .footer-col ul a:hover { color: var(--white); }
+    .footer-bottom {
+      border-top: 1px solid rgba(245,240,232,.07);
+      padding: 22px 0;
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: .78rem;
+    }
+    .footer-bottom a { color: rgba(245,240,232,.4); }
+    .footer-bottom a:hover { color: var(--white); }
+
+    .reveal { opacity: 0; transform: translateY(30px); transition: opacity .7s ease, transform .7s ease; }
+    .reveal.visible { opacity: 1; transform: none; }
+    .reveal-delay-1 { transition-delay: .1s; }
+    .reveal-delay-2 { transition-delay: .2s; }
+    .reveal-delay-3 { transition-delay: .3s; }
+
+    @media (max-width: 900px) {
+      .about-grid { grid-template-columns: 1fr; gap: 48px; }
+      .about-image-wrap { max-width: 480px; margin: 0 auto; }
+      .destinations-grid { grid-template-columns: 1fr; }
+      .testi-grid { grid-template-columns: 1fr 1fr; }
+      .contact-grid { grid-template-columns: 1fr; gap: 48px; }
+      .footer-main { grid-template-columns: 1fr 1fr; gap: 36px; }
+      .hero-scroll { display: none; }
+    }
+    @media (max-width: 680px) {
+      .nav-links, .nav-cta { display: none; }
+      .hamburger { display: flex; }
+      .properties-grid { grid-template-columns: 1fr; }
+      .testi-grid { grid-template-columns: 1fr; }
+      .footer-main { grid-template-columns: 1fr; }
+      .stats-inner { flex-wrap: wrap; }
+      .stat { padding: 20px 28px; }
+      .stat + .stat::before { display: none; }
+      .form-row { grid-template-columns: 1fr; }
+      .hero-actions .btn { width: 100%; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <div class="nav-logo" onclick="smoothScrollTo('#home')">
+      <div class="nav-logo-mark">
+        <svg viewBox="0 0 24 24"><path d="M12 2C7 2 3 7 3 12s4 10 9 10 9-4.5 9-10S17 2 12 2zm0 3c1.5 0 3 .8 4 2H8c1-1.2 2.5-2 4-2zm-6 4h12l-1 5H7l-1-5zm1.5 7h9l-2 3h-5l-2-3z"/></svg>
+      </div>
+      <span class="nav-logo-text">Aegean<span>Stays</span></span>
+    </div>
+    <ul class="nav-links">
+      <li><a onclick="smoothScrollTo('#properties')">Properties</a></li>
+      <li><a onclick="smoothScrollTo('#destinations')">Destinations</a></li>
+      <li><a onclick="smoothScrollTo('#about')">About Us</a></li>
+      <li><a onclick="smoothScrollTo('#contact')">Contact</a></li>
+    </ul>
+    <button class="btn btn--primary nav-cta" onclick="smoothScrollTo('#contact')">Enquire Now</button>
+    <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a onclick="smoothScrollTo('#properties');toggleMenu()">Properties</a>
+  <a onclick="smoothScrollTo('#destinations');toggleMenu()">Destinations</a>
+  <a onclick="smoothScrollTo('#about');toggleMenu()">About Us</a>
+  <a onclick="smoothScrollTo('#contact');toggleMenu()">Contact</a>
+  <button class="btn btn--primary" onclick="smoothScrollTo('#contact');toggleMenu()">Enquire Now</button>
+</div>
+
+<section class="hero" id="home">
+  <div class="hero-bg"></div>
+  <div class="hero-decor"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">Athens &amp; Andros, Greece</div>
+    <h1>Find Your <em>Perfect</em><br>Mediterranean Home</h1>
+    <p class="hero-sub">Handpicked houses and apartments in the heart of Athens and the serene shores of Andros island — your Greek escape awaits.</p>
+    <div class="hero-actions">
+      <button class="btn btn--ghost" onclick="smoothScrollTo('#properties')">Browse Properties</button>
+      <button class="btn btn--primary" onclick="smoothScrollTo('#contact')">Get in Touch</button>
+    </div>
+  </div>
+  <div class="hero-waves">
+    <svg viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+      <path d="M0 80V40C240 0 480 60 720 40S1200 0 1440 30V80H0z" fill="#F5F0E8"/>
+    </svg>
+  </div>
+  <div class="hero-scroll">
+    <div class="hero-scroll-line"></div>
+    <span>Scroll</span>
+  </div>
+</section>
+
+<div class="stats-bar">
+  <div class="stats-inner">
+    <div class="stat">
+      <span class="stat-num">12+</span>
+      <span class="stat-label">Properties</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">2</span>
+      <span class="stat-label">Locations</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">5★</span>
+      <span class="stat-label">Guest Rating</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">8+</span>
+      <span class="stat-label">Years Experience</span>
+    </div>
+  </div>
+</div>
+
+<section class="properties" id="properties">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-tag tag tag--aegean">Our Rentals</div>
+      <h2>Explore Our Properties</h2>
+      <p>From Athenian city apartments to Andros island retreats — each home thoughtfully managed and ready for you.</p>
+    </div>
+    <div class="filter-tabs reveal">
+      <button class="filter-tab active" onclick="filterProperties('all', this)">All Properties</button>
+      <button class="filter-tab" onclick="filterProperties('athens', this)">Athens</button>
+      <button class="filter-tab" onclick="filterProperties('andros', this)">Andros</button>
+    </div>
+    <div class="properties-grid" id="propertiesGrid"></div>
+  </div>
+</section>
+
+<section class="about" id="about">
+  <div class="container">
+    <div class="about-grid">
+      <div class="about-image-wrap reveal">
+        <div class="about-image-main">
+          <img src="https://images.unsplash.com/photo-1555993539-1732b0258235?w=900&q=85" alt="Athens Acropolis view" style="height:100%;object-fit:cover;" />
+        </div>
+        <div class="about-image-accent">
+          <img src="https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?w=600&q=80" alt="Andros harbour" style="height:100%;object-fit:cover;" />
+        </div>
+        <div class="about-badge">
+          <span class="about-badge-num">8+</span>
+          <span class="about-badge-text">Years of trusted<br>Greek hospitality</span>
+        </div>
+      </div>
+      <div class="about-text reveal reveal-delay-2">
+        <div class="about-tag tag tag--olive">Who We Are</div>
+        <h2>A Family Business Built on Greek Hospitality</h2>
+        <p class="about-lead">Aegean Stays is a small, family-run letting agency passionate about connecting guests with authentic homes in two of Greece's most captivating settings.</p>
+        <p class="about-body">We personally manage every property — so when you book with us, you're speaking directly with the people who know each home inside out. No call centres, no guesswork. Just warm, honest service from people who love this corner of the world.</p>
+        <div class="about-features">
+          <div class="about-feature">
+            <div class="about-feature-icon">🔑</div>
+            <div class="about-feature-text">
+              <strong>Direct booking — no hidden fees</strong>
+              <span>Pay what you see. No platform surcharges or surprise costs.</span>
+            </div>
+          </div>
+          <div class="about-feature">
+            <div class="about-feature-icon">🧹</div>
+            <div class="about-feature-text">
+              <strong>Professionally maintained homes</strong>
+              <span>Every property cleaned, checked, and ready before your arrival.</span>
+            </div>
+          </div>
+          <div class="about-feature">
+            <div class="about-feature-icon">📞</div>
+            <div class="about-feature-text">
+              <strong>Local support, always available</strong>
+              <span>A local contact on hand for the duration of your stay.</span>
+            </div>
+          </div>
+        </div>
+        <button class="btn btn--primary" onclick="smoothScrollTo('#contact')">Get in Touch</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="destinations" id="destinations">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-tag tag tag--aegean">Where We Operate</div>
+      <h2>Two Unforgettable Destinations</h2>
+      <p>Whether you crave the energy of the city or the quiet of the island, we have the perfect home waiting.</p>
+    </div>
+    <div class="destinations-grid">
+      <div class="dest-card reveal">
+        <div class="dest-card-bg" style="background:url('https://images.unsplash.com/photo-1603565816030-6987515f0b2f?w=900&q=80') center/cover no-repeat;"></div>
+        <div class="dest-icon">🏛️</div>
+        <div class="dest-card-content">
+          <div class="tag dest-tag">Athens</div>
+          <h3>The Eternal City</h3>
+          <p>Stay within walking distance of the Acropolis, Monastiraki, and the vibrant neighbourhoods of Koukaki and Plaka. Urban life at its most captivating.</p>
+          <button class="btn btn--ghost" style="padding:10px 20px;font-size:.82rem;" onclick="filterProperties('athens',null);smoothScrollTo('#properties')">View Athens Rentals →</button>
+        </div>
+      </div>
+      <div class="dest-card reveal reveal-delay-2">
+        <div class="dest-card-bg" style="background:url('https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?w=900&q=80') center/cover no-repeat;"></div>
+        <div class="dest-icon">⛵</div>
+        <div class="dest-card-content">
+          <div class="tag dest-tag">Andros</div>
+          <h3>The Hikers' Island</h3>
+          <p>Just a ferry from Rafina, Andros offers marble villages, dramatic trails, crystal waters, and a slower pace of life that stays with you long after you leave.</p>
+          <button class="btn btn--ghost" style="padding:10px 20px;font-size:.82rem;" onclick="filterProperties('andros',null);smoothScrollTo('#properties')">View Andros Rentals →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="testimonials">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="tag section-tag">Guest Reviews</div>
+      <h2>What Our Guests Say</h2>
+      <p>Honest words from people who've stayed with us.</p>
+    </div>
+    <div class="testi-grid">
+      <div class="testi-card reveal">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">"The Koukaki apartment was stunning — spotless, beautifully furnished, and just minutes from everything. The owners were incredibly helpful with local tips."</p>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:var(--terracotta);">S</div>
+          <div>
+            <div class="testi-name">Sarah M.</div>
+            <div class="testi-origin">London, UK</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card reveal reveal-delay-1">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">"We spent two weeks in the Andros villa and it was pure magic. The terrace view of the Aegean is something we'll never forget. Already booked again for next summer."</p>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:var(--olive);">J</div>
+          <div>
+            <div class="testi-name">Jean-Pierre L.</div>
+            <div class="testi-origin">Lyon, France</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card reveal reveal-delay-2">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">"Brilliant experience from start to finish. Quick responses, no fuss booking, and a genuinely lovely home. Aegean Stays is how holiday renting should be."</p>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:var(--sky);">A</div>
+          <div>
+            <div class="testi-name">Anna K.</div>
+            <div class="testi-origin">Berlin, Germany</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="contact" id="contact">
+  <div class="container">
+    <div class="contact-grid">
+      <div class="reveal">
+        <div class="tag tag--aegean" style="margin-bottom:16px;">Get In Touch</div>
+        <h2>Ready to Find Your Greek Home?</h2>
+        <p class="contact-lead">Tell us what you're looking for — location, dates, size, budget — and we'll come back to you with the best available options. We reply within 24 hours.</p>
+        <div class="contact-items">
+          <div class="contact-item">
+            <div class="contact-icon contact-icon--terra">📧</div>
+            <div class="contact-info">
+              <strong>Email</strong>
+              <a href="mailto:hello@aegeanstays.gr">hello@aegeanstays.gr</a>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-icon contact-icon--aegean">📞</div>
+            <div class="contact-info">
+              <strong>Phone / WhatsApp</strong>
+              <span>+30 210 000 0000</span>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-icon contact-icon--olive">🕐</div>
+            <div class="contact-info">
+              <strong>Response Time</strong>
+              <span>Within 24 hours, 7 days a week</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="contact-form reveal reveal-delay-2">
+        <h3>Send an Enquiry</h3>
+        <p>Fill in the details below and we'll be in touch shortly.</p>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Your Name</label>
+            <input type="text" id="fName" placeholder="Maria" />
+          </div>
+          <div class="form-group">
+            <label>Email Address</label>
+            <input type="email" id="fEmail" placeholder="you@email.com" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Property of Interest</label>
+          <select id="fProperty">
+            <option value="">— Select a property —</option>
+            <option>Koukaki Garden Apartment, Athens</option>
+            <option>Plaka Studio with Acropolis View, Athens</option>
+            <option>Exarcheia Designer Flat, Athens</option>
+            <option>Batsi Seafront House, Andros</option>
+            <option>Chora Stone Villa, Andros</option>
+            <option>Apikia Valley Retreat, Andros</option>
+            <option>I'm flexible — show me options</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Check-in Date</label>
+            <input type="date" id="fCheckin" />
+          </div>
+          <div class="form-group">
+            <label>Check-out Date</label>
+            <input type="date" id="fCheckout" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Message (optional)</label>
+          <textarea id="fMessage" placeholder="Number of guests, questions, preferences…"></textarea>
+        </div>
+        <button class="btn btn--primary" style="width:100%;justify-content:center;" onclick="sendEnquiry()">
+          Send Enquiry →
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-main">
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <div class="footer-logo-mark">
+            <svg viewBox="0 0 24 24"><path d="M12 2C7 2 3 7 3 12s4 10 9 10 9-4.5 9-10S17 2 12 2zm0 3c1.5 0 3 .8 4 2H8c1-1.2 2.5-2 4-2zm-6 4h12l-1 5H7l-1-5zm1.5 7h9l-2 3h-5l-2-3z"/></svg>
+          </div>
+          <span class="footer-logo-text">Aegean<span>Stays</span></span>
+        </div>
+        <p class="footer-tagline">Family-run holiday lettings in Athens and Andros, Greece. Honest homes, warm service.</p>
+        <div class="footer-social">
+          <a class="social-btn" href="#" title="Instagram">📷</a>
+          <a class="social-btn" href="#" title="Facebook">f</a>
+          <a class="social-btn" href="#" title="WhatsApp">💬</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Properties</h4>
+        <ul>
+          <li><a onclick="filterProperties('all',null);smoothScrollTo('#properties')">All Rentals</a></li>
+          <li><a onclick="filterProperties('athens',null);smoothScrollTo('#properties')">Athens Apartments</a></li>
+          <li><a onclick="filterProperties('andros',null);smoothScrollTo('#properties')">Andros Villas</a></li>
+          <li><a onclick="filterProperties('all',null);smoothScrollTo('#properties')">Long-term Lets</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a onclick="smoothScrollTo('#about')">About Us</a></li>
+          <li><a onclick="smoothScrollTo('#destinations')">Destinations</a></li>
+          <li><a onclick="smoothScrollTo('#contact')">Contact</a></li>
+          <li><a href="#">FAQ</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms &amp; Conditions</a></li>
+          <li><a href="#">Rental Agreement</a></li>
+          <li><a href="#">Cookie Policy</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 Aegean Stays. All rights reserved.</span>
+      <span>Made with ♥ in Athens &amp; Andros</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ── SMOOTH SCROLL HELPER ──
+   Renamed from scrollTo to smoothScrollTo to avoid
+   conflicting with the native window.scrollTo() API.
+*/
+function smoothScrollTo(selector) {
+  const el = document.querySelector(selector);
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+/* ── PROPERTY DATA ── */
+const PROPERTIES = [
+  {
+    id: 'koukaki-garden',
+    location: 'athens',
+    locationLabel: 'Koukaki, Athens',
+    title: 'Koukaki Garden Apartment',
+    description: 'A bright, tastefully renovated apartment on a tree-lined street in Koukaki — one of Athens\'s most beloved residential neighbourhoods. Just 800 m from the Acropolis Museum and a short stroll from the lively Varvakios market. The highlight is the private paved courtyard garden, shaded by a mature lemon tree: perfect for breakfast or an evening glass of wine. Inside, the apartment has been freshly painted in warm whites and terracotta tones, with solid oak floors, a fully equipped open-plan kitchen and two comfortable double bedrooms.',
+    features: [
+      { icon: '🛏️', label: '2 bedrooms' },
+      { icon: '📐', label: '75 m²' },
+      { icon: '🌿', label: 'Private garden' },
+      { icon: '❄️', label: 'A/C & heating' },
+      { icon: '📶', label: 'Fast Wi-Fi' },
+      { icon: '🍳', label: 'Full kitchen' },
+    ],
+    price: '€95',
+    period: 'per night',
+    images: [
+      'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
+      'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&q=80',
+      'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&q=80',
+      'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800&q=80',
+      'https://images.unsplash.com/photo-1598928506311-c55ded91a20c?w=800&q=80',
+      'https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?w=800&q=80',
+    ],
+    type: 'apartment',
+    email: 'hello@aegeanstays.gr',
+  },
+  {
+    id: 'plaka-studio',
+    location: 'athens',
+    locationLabel: 'Plaka, Athens',
+    title: 'Plaka Studio with Acropolis View',
+    description: 'Step out onto the small juliet balcony and you\'ll see it immediately: the Parthenon glowing on the hill, impossibly close. This charming studio sits on the third floor of a neoclassical building in Plaka — Athens\'s oldest neighbourhood, a labyrinth of whitewashed lanes, bougainvillea cascades, and open-air tavernas. The space is compact but intelligently designed, with a built-in double bed, a kitchenette stocked with everything you need for a light breakfast, a neat bathroom with rain shower, and a working desk by the window.',
+    features: [
+      { icon: '🛏️', label: '1 bedroom' },
+      { icon: '📐', label: '42 m²' },
+      { icon: '🏛️', label: 'Acropolis view' },
+      { icon: '❄️', label: 'A/C & heating' },
+      { icon: '📶', label: 'Fast Wi-Fi' },
+      { icon: '☕', label: 'Kitchenette' },
+    ],
+    price: '€80',
+    period: 'per night',
+    images: [
+      'https://images.unsplash.com/photo-1555993539-1732b0258235?w=800&q=80',
+      'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&q=80',
+      'https://images.unsplash.com/photo-1507089947368-19c1da9775ae?w=800&q=80',
+      'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&q=80',
+      'https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=800&q=80',
+      'https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?w=800&q=80',
+    ],
+    type: 'studio',
+    email: 'hello@aegeanstays.gr',
+  },
+  {
+    id: 'exarcheia-flat',
+    location: 'athens',
+    locationLabel: 'Exarcheia, Athens',
+    title: 'Exarcheia Designer Flat',
+    description: 'A confidently styled two-bedroom flat in Exarcheia — the bohemian, creative hub of central Athens. The owner is an architect, and it shows: exposed concrete ceilings are paired with warm oak shelving, custom lighting, and a carefully curated collection of Greek art prints. The open-plan living and kitchen area is generous, with a large dining table that seats six. Two well-proportioned bedrooms have excellent blackout curtains and quality mattresses. A ten-minute walk puts you at the National Archaeological Museum.',
+    features: [
+      { icon: '🛏️', label: '2 bedrooms' },
+      { icon: '📐', label: '68 m²' },
+      { icon: '🎨', label: 'Designer interior' },
+      { icon: '❄️', label: 'A/C & heating' },
+      { icon: '📶', label: 'Fast Wi-Fi' },
+      { icon: '🍳', label: 'Full kitchen' },
+    ],
+    price: '€85',
+    period: 'per night',
+    images: [
+      'https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=800&q=80',
+      'https://images.unsplash.com/photo-1618219908412-a29a1bb7b86e?w=800&q=80',
+      'https://images.unsplash.com/photo-1588854337221-4cf9fa96059c?w=800&q=80',
+      'https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=800&q=80',
+      'https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=800&q=80',
+      'https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?w=800&q=80',
+    ],
+    type: 'apartment',
+    email: 'hello@aegeanstays.gr',
+  },
+  {
+    id: 'glyfada-seaside',
+    location: 'athens',
+    locationLabel: 'Glyfada, Athens Riviera',
+    title: 'Glyfada Seaside Apartment',
+    description: 'The Athens Riviera is one of Greece\'s best-kept secrets — a coastline of clean beaches and pine-backed promenades stretching south of the city. This bright, airy apartment sits in a low-rise building in Glyfada, a five-minute walk from the sandy town beach and surrounded by excellent restaurants and beach bars. Light pours in from south-facing windows. Both bedrooms have sea glimpses. There is a private parking space, and the tram connects to central Athens in around 40 minutes.',
+    features: [
+      { icon: '🛏️', label: '2 bedrooms' },
+      { icon: '📐', label: '80 m²' },
+      { icon: '🏖️', label: '5 min to beach' },
+      { icon: '🅿️', label: 'Parking included' },
+      { icon: '📶', label: 'Fast Wi-Fi' },
+      { icon: '🍳', label: 'Full kitchen' },
+    ],
+    price: '€110',
+    period: 'per night',
+    images: [
+      'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&q=80',
+      'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80',
+      'https://images.unsplash.com/photo-1560185007-cde436f6a4d0?w=800&q=80',
+      'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800&q=80',
+      'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&q=80',
+      'https://images.unsplash.com/photo-1439130490301-25e322d88054?w=800&q=80',
+    ],
+    type: 'apartment',
+    email: 'hello@aegeanstays.gr',
+  },
+  {
+    id: 'batsi-seafront',
+    location: 'andros',
+    locationLabel: 'Batsi, Andros',
+    title: 'Batsi Seafront House',
+    description: 'Batsi is the most sociable village on Andros — a curving harbour lined with colourful fishing boats, waterfront tavernas, and a sandy beach that\'s just right for families. This traditional two-storey house sits directly on the harbour front: the ground floor has an open kitchen-diner and a sitting room that spills out onto a terrace with views of the water. Upstairs are three well-sized bedrooms. The beach is 50 metres away, and the ferry port of Gavrio is a 15-minute drive.',
+    features: [
+      { icon: '🛏️', label: '3 bedrooms' },
+      { icon: '📐', label: '110 m²' },
+      { icon: '🌊', label: 'Seafront position' },
+      { icon: '🏖️', label: 'Beach 50 m' },
+      { icon: '📶', label: 'Wi-Fi' },
+      { icon: '🍳', label: 'Full kitchen' },
+    ],
+    price: '€140',
+    period: 'per night',
+    images: [
+      'https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?w=800&q=80',
+      'https://images.unsplash.com/photo-1602343168117-bb8ffe3e2e9f?w=800&q=80',
+      'https://images.unsplash.com/photo-1598928636135-d146006ff4be?w=800&q=80',
+      'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800&q=80',
+      'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&q=80',
+      'https://images.unsplash.com/photo-1439130490301-25e322d88054?w=800&q=80',
+    ],
+    type: 'house',
+    email: 'hello@aegeanstays.gr',
+  },
+  {
+    id: 'chora-stone-villa',
+    location: 'andros',
+    locationLabel: 'Chora, Andros',
+    title: 'Chora Stone Villa',
+    description: 'Chora — the capital of Andros — is a remarkable place: a narrow peninsula of neoclassical mansions, marble-paved lanes, and a natural balcony over the Aegean. This fully restored stone villa sits at the edge of the old town with unobstructed views of the sea on two sides. The property has four bedrooms with en-suite bathrooms, a grand living and dining room with original stone arches, a private heated pool, and a mature garden of bougainvillea and rosemary.',
+    features: [
+      { icon: '🛏️', label: '4 bedrooms' },
+      { icon: '📐', label: '160 m²' },
+      { icon: '🌊', label: 'Sea & valley views' },
+      { icon: '🏊', label: 'Private pool' },
+      { icon: '📶', label: 'Wi-Fi' },
+      { icon: '🍳', label: 'Full kitchen' },
+    ],
+    price: '€220',
+    period: 'per night',
+    images: [
+      'https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?w=800&q=80',
+      'https://images.unsplash.com/photo-1598928506311-c55ded91a20c?w=800&q=80',
+      'https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?w=800&q=80',
+      'https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=800&q=80',
+      'https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=800&q=80',
+      'https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?w=800&q=80',
+    ],
+    type: 'villa',
+    email: 'hello@aegeanstays.gr',
+  },
+  {
+    id: 'apikia-valley',
+    location: 'andros',
+    locationLabel: 'Apikia, Andros',
+    title: 'Apikia Valley Retreat',
+    description: 'Tucked into the lush green valley above the famous Sariza spring, Apikia is a different side of Andros — cool even in August, draped in plane trees and the sound of running water. This traditional stone cottage has been sensitively restored: original slate roof, thick walls, a wood-burning fireplace, and a reading nook beside the east-facing window that gets the morning sun. Two bedrooms sleep up to four adults. The terrace overlooks a working olive grove, and the famous Andros hiking route passes a ten-minute walk away.',
+    features: [
+      { icon: '🛏️', label: '2 bedrooms' },
+      { icon: '📐', label: '85 m²' },
+      { icon: '🌿', label: 'Nature setting' },
+      { icon: '🥾', label: 'Trail access' },
+      { icon: '📶', label: 'Wi-Fi' },
+      { icon: '🔥', label: 'Fireplace' },
+    ],
+    price: '€95',
+    period: 'per night',
+    images: [
+      'https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=800&q=80',
+      'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&q=80',
+      'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80',
+      'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800&q=80',
+      'https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=800&q=80',
+      'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&q=80',
+    ],
+    type: 'cottage',
+    email: 'hello@aegeanstays.gr',
+  },
+  {
+    id: 'stenies-mansion',
+    location: 'andros',
+    locationLabel: 'Stenies, Andros',
+    title: 'Stenies Neoclassical Mansion',
+    description: 'Stenies is the grandest village on Andros — a place where 19th-century sea captains built their mansions amid cedar forests and rushing streams. This lovingly restored property features original marble floors, frescoed ceilings, and tall shuttered windows. Five bedrooms each have their own character with wrought iron bedsteads and antique wardrobes. The walled garden is spectacular in summer: bougainvillea, jasmine, a dining terrace shaded by a vast plane tree, and a separate stone outhouse converted into a sitting room.',
+    features: [
+      { icon: '🛏️', label: '5 bedrooms' },
+      { icon: '📐', label: '220 m²' },
+      { icon: '🌸', label: 'Walled garden' },
+      { icon: '🏛️', label: 'Historic building' },
+      { icon: '📶', label: 'Wi-Fi' },
+      { icon: '🍳', label: 'Full kitchen' },
+    ],
+    price: '€290',
+    period: 'per night',
+    images: [
+      'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&q=80',
+      'https://images.unsplash.com/photo-1598928636135-d146006ff4be?w=800&q=80',
+      'https://images.unsplash.com/photo-1560448075-bb485b067938?w=800&q=80',
+      'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=800&q=80',
+      'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&q=80',
+      'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80',
+    ],
+    type: 'mansion',
+    email: 'hello@aegeanstays.gr',
+  },
+];
+
+/* ── RENDER CARDS ── */
+function buildCard(p) {
+  const imagesHtml = p.images.map((url) => `
+    <img src="${url}" alt="${p.title}" loading="lazy" style="min-width:100%;height:100%;object-fit:cover;flex-shrink:0;" />
+  `).join('');
+
+  const dotsHtml = p.images.map((_, i) => `
+    <div class="card-dot${i === 0 ? ' active' : ''}"></div>
+  `).join('');
+
+  const featuresHtml = p.features.map(f => `
+    <div class="card-feature"><span>${f.icon}</span>${f.label}</div>
+  `).join('');
+
+  const locClass = p.location === 'athens' ? 'tag--aegean' : 'tag--olive';
+  const shortDesc = p.description.length > 160 ? p.description.slice(0, 157).trimEnd() + '…' : p.description;
+
+  const subject = encodeURIComponent(`Enquiry: ${p.title}`);
+  const body = encodeURIComponent(`Hello,\n\nI am interested in the property "${p.title}" (${p.locationLabel}).\n\nPlease could you let me know availability and pricing?\n\nMany thanks.`);
+  const mailto = `mailto:${p.email}?subject=${subject}&body=${body}`;
+
+  return `
+    <div class="property-card reveal" data-location="${p.location}">
+      <div class="card-gallery" data-index="0" data-max="${p.images.length - 1}">
+        <div class="card-gallery-track">${imagesHtml}</div>
+        <button class="card-gallery-prev" onclick="galleryPrev(this.closest('.card-gallery'))" aria-label="Previous image">
+          <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <button class="card-gallery-next" onclick="galleryNext(this.closest('.card-gallery'))" aria-label="Next image">
+          <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+        <div class="card-dots">${dotsHtml}</div>
+        <div class="card-badge">
+          <span class="tag ${locClass}">${p.location === 'athens' ? '🏛' : '⛵'} ${p.locationLabel.split(',')[0]}</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-location">
+          <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z"/></svg>
+          ${p.locationLabel}
+        </div>
+        <h3 class="card-title">${p.title}</h3>
+        <p class="card-desc">${shortDesc}</p>
+        <div class="card-features">${featuresHtml}</div>
+        <div class="card-footer">
+          <div class="card-price">
+            <div class="card-price-amount">${p.price}</div>
+            <div class="card-price-period">${p.period}</div>
+          </div>
+          <a href="${mailto}" class="btn btn--primary" style="padding:10px 20px;font-size:.82rem;">Enquire →</a>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderProperties(filter) {
+  const grid = document.getElementById('propertiesGrid');
+  const list = filter === 'all' ? PROPERTIES : PROPERTIES.filter(p => p.location === filter);
+  grid.innerHTML = list.map(buildCard).join('');
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+}
+
+/* ── GALLERY NAV ── */
+function galleryNav(gallery, direction) {
+  const max = parseInt(gallery.dataset.max);
+  let idx = parseInt(gallery.dataset.index);
+  idx = (idx + direction + max + 1) % (max + 1);
+  gallery.dataset.index = idx;
+  gallery.querySelector('.card-gallery-track').style.transform = `translateX(-${idx * 100}%)`;
+  gallery.querySelectorAll('.card-dot').forEach((d, i) => d.classList.toggle('active', i === idx));
+}
+function galleryPrev(g) { galleryNav(g, -1); }
+function galleryNext(g) { galleryNav(g, 1); }
+
+/* ── FILTER TABS ── */
+function filterProperties(filter, btn) {
+  document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  renderProperties(filter);
+}
+
+/* ── ENQUIRY FORM ── */
+function sendEnquiry() {
+  const name     = document.getElementById('fName').value.trim();
+  const email    = document.getElementById('fEmail').value.trim();
+  const property = document.getElementById('fProperty').value;
+  const checkin  = document.getElementById('fCheckin').value;
+  const checkout = document.getElementById('fCheckout').value;
+  const message  = document.getElementById('fMessage').value.trim();
+
+  const subject = encodeURIComponent(`Enquiry from ${name || 'Guest'}: ${property || 'General'}`);
+  const body = encodeURIComponent(
+    `Name: ${name}\nEmail: ${email}\nProperty: ${property}\nCheck-in: ${checkin}\nCheck-out: ${checkout}\n\n${message}`
+  );
+  window.location.href = `mailto:hello@aegeanstays.gr?subject=${subject}&body=${body}`;
+}
+
+/* ── SCROLL ANIMATIONS ── */
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+}, { threshold: 0.05, rootMargin: '0px 0px -40px 0px' });
+
+/* ── NAV SCROLL EFFECT ── */
+window.addEventListener('scroll', () => {
+  document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 40);
+});
+
+/* ── MOBILE MENU ── */
+function toggleMenu() {
+  document.getElementById('mobileMenu').classList.toggle('open');
+}
+
+/* ── INIT ── */
+document.addEventListener('DOMContentLoaded', () => {
+  renderProperties('all');
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+});
+</script>
+</body>
 </html>
